@@ -64,7 +64,6 @@ static u8 in(z80* const z, u8 port) {
 
 static void out(z80* const z, u8 port, u8 val) {
     test_finished = 1;
-    return;
 }
 
 // MARK: test runner

@@ -896,18 +896,18 @@ void exec_opcode(z80* const z, u8 opcode) {
 
     case 0x02:
         wb(z, get_bc(z), z->a);
-        z->mem_ptr = (z->a << 8) || ((get_bc(z) + 1) & 0xFF);
+        z->mem_ptr = (z->a << 8) | ((get_bc(z) + 1) & 0xFF);
     break; // ld (bc),a
 
     case 0x12:
         wb(z, get_de(z), z->a);
-        z->mem_ptr = (z->a << 8) || ((get_de(z) + 1) & 0xFF);
+        z->mem_ptr = (z->a << 8) | ((get_de(z) + 1) & 0xFF);
     break; // ld (de),a
 
     case 0x32: {
         const u16 addr = nextw(z);
         wb(z, addr, z->a);
-        z->mem_ptr = (z->a << 8) || ((addr + 1) & 0xFF);
+        z->mem_ptr = (z->a << 8) | ((addr + 1) & 0xFF);
     } break; // ld (**),a
 
     // 16 bit transfer instructions
