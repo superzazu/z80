@@ -67,7 +67,7 @@ static void out(z80* const z, u8 port, u8 val) {
 }
 
 // MARK: test runner
-static void run_test(z80* const z, const char* filename,
+static int run_test(z80* const z, const char* filename,
                      unsigned long cyc_expected) {
     z80_init(z);
     z->read_byte = rb;
@@ -77,7 +77,7 @@ static void run_test(z80* const z, const char* filename,
     memset(memory, 0, 0x10000);
 
     if (load_file(filename, 0x100) != 0) {
-        return;
+        return 1;
     }
     printf("*** TEST: %s\n", filename);
 
@@ -108,6 +108,8 @@ static void run_test(z80* const z, const char* filename,
         " (expected=%lu, diff=%lld)\n\n",
         nb_instructions, z->cyc,
         cyc_expected, diff);
+
+    return cyc_expected != z->cyc;
 }
 
 int main(void) {
@@ -119,10 +121,11 @@ int main(void) {
 
     // the following cycle counts have been retrieved from z80emu
     // (https://github.com/anotherlin/z80emu) for those exact roms
-    run_test(&cpu, "roms/prelim.com", 8721LU);
-    run_test(&cpu, "roms/zexdoc.cim", 46734978649LU);
-    run_test(&cpu, "roms/zexall.cim", 46734978649LU);
+    int r = 0;
+    r += run_test(&cpu, "roms/prelim.com", 8721LU);
+    r += run_test(&cpu, "roms/zexdoc.cim", 46734978649LU);
+    r += run_test(&cpu, "roms/zexall.cim", 46734978649LU);
 
     free(memory);
-    return 0;
+    return r != 0;
 }

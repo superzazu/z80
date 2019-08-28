@@ -61,7 +61,8 @@ static const u8 cyc_ddfd[256] = {
 
 // MARK: helpers
 
-#define GET_BIT(n, val) (((val) >> (n)) & 1) // get bit n of number val
+// get bit "n" of number "val"
+#define GET_BIT(n, val) (((val) >> (n)) & 1)
 
 static inline u8 rb(z80* const z, u16 addr) {
     return z->read_byte(z->userdata, addr);
