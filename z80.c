@@ -716,22 +716,49 @@ static inline void process_interrupts(z80* const z) {
 void z80_init(z80* const z) {
     // af and sp are set to 0xFFFF after reset,
     // and the other values are undefined (z80-documented)
-    z->a = z->b = z->c = z->d = z->e = z->h = z->l = 0;
-    z->a_ = z->b_ = z->c_ = z->d_ = z->e_ = z->h_ = z->l_ = 0;
-    z->i = z->r = 0;
-    z->pc = z->sp = z->ix = z->iy = 0;
-
     z->a = 0xFF;
-    z->sp = 0xFFFF;
+    z->b = 0;
+    z->c = 0;
+    z->d = 0;
+    z->e = 0;
+    z->h = 0;
+    z->l = 0;
 
-    z->sf = z->zf = z->yf = z->hf = z->xf = z->pf = z->nf = z->cf = z->cyc = 0;
+    z->a_ = 0;
+    z->b_ = 0;
+    z->c_ = 0;
+    z->d_ = 0;
+    z->e_ = 0;
+    z->h_ = 0;
+    z->l_ = 0;
+
+    z->i = 0;
+    z->r = 0;
+
+    z->pc = 0;
+    z->sp = 0xFFFF;
+    z->ix = 0;
+    z->iy = 0;
+
+    z->sf = 1;
+    z->zf = 1;
+    z->yf = 1;
+    z->hf = 1;
+    z->xf = 1;
+    z->pf = 1;
+    z->nf = 1;
+    z->cf = 1;
+
+    z->cyc = 0;
 
     z->iff_delay = 0;
     z->interrupt_mode = 0;
-    z->iff1 = z->iff2 = 0;
+    z->iff1 = 0;
+    z->iff2 = 0;
     z->halted = 0;
 
-    z->int_pending = z->nmi_pending = 0;
+    z->int_pending = 0;
+    z->nmi_pending = 0;
     z->int_data = 0;
 
     z->mem_ptr = 0;
