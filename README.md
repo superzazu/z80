@@ -1,6 +1,6 @@
 # z80
 
-A complete z80 emulator written in C99. The emulator currently passes both zexdoc and zexall Z80 instruction exerciser tests. See `z80_tests.c` for example usage. Note that cycles are counted at instruction level.
+A complete z80 emulator written in C99 under the MIT license. The emulator currently passes both zexdoc and zexall Z80 instruction exerciser tests. See `z80_tests.c` for example usage. Note that cycles are counted at instruction level.
 
 You can run the tests by running `make && ./z80_tests`, which outputs:
 
@@ -154,9 +154,9 @@ Tests complete
 *** 5764169747 instructions executed on 46734978649 cycles (expected=46734978649, diff=0)
 ```
 
-## TODO
+## Licensing
 
-- [ ] interrupt mode 0
+This project is under the MIT license; except the files in `roms` which are provided for convenience to test the z80 core implementation. These files authors' and licenses can be seen in the source files (.z80/.src files).
 
 ## Resources
 

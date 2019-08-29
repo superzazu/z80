@@ -167,6 +167,12 @@ static inline bool parity(u8 val) {
     return (nb_one_bits & 1) == 0;
 }
 
+static void exec_opcode(z80* const z, u8 opcode);
+static void exec_opcode_cb(z80* const z, u8 opcode);
+static void exec_opcode_dcb(z80* const z, const u8 opcode, const u16 addr);
+static void exec_opcode_ed(z80* const z, u8 opcode);
+static void exec_opcode_ddfd(z80* const z, u8 opcode, u16* const iz);
+
 // MARK: opcodes
 // jumps to an address
 static inline void jump(z80* const z, u16 addr) {
@@ -679,11 +685,10 @@ static inline void process_interrupts(z80* const z) {
         inc_r(z);
 
         switch (z->interrupt_mode) {
-            // @TODO: interrupt mode 0
-            // case 0:
-            //     z->cyc += 11;
-            //     call(z, z->int_data);
-            // break;
+            case 0:
+                z->cyc += 11;
+                exec_opcode(z, z->int_data);
+            break;
 
             case 1:
                 z->cyc += 13;
@@ -704,12 +709,6 @@ static inline void process_interrupts(z80* const z) {
         return;
     }
 }
-
-static void exec_opcode(z80* const z, u8 opcode);
-static void exec_opcode_cb(z80* const z, u8 opcode);
-static void exec_opcode_dcb(z80* const z, const u8 opcode, const u16 addr);
-static void exec_opcode_ed(z80* const z, u8 opcode);
-static void exec_opcode_ddfd(z80* const z, u8 opcode, u16* const iz);
 
 // MARK: interface
 // initialises a z80 struct. read_byte/write_byte/port_in/port_out must be
