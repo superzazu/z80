@@ -2,7 +2,7 @@
 
 // MARK: timings
 
-static const u8 cyc_00[256] = {
+static const uint8_t cyc_00[256] = {
     4, 10, 7, 6, 4, 4, 7, 4, 4, 11, 7, 6, 4, 4, 7, 4,
     8, 10, 7, 6, 4, 4, 7, 4, 12, 11, 7, 6, 4, 4, 7, 4,
     7, 10, 16, 6, 4, 4, 7, 4, 7, 11, 16, 6, 4, 4, 7, 4,
@@ -21,7 +21,7 @@ static const u8 cyc_00[256] = {
     5, 10, 10, 4, 10, 11, 7, 11, 5, 6, 10, 4, 10, 0, 7, 11
 };
 
-static const u8 cyc_ed[256] = {
+static const uint8_t cyc_ed[256] = {
     8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
     8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
     8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
@@ -40,7 +40,7 @@ static const u8 cyc_ed[256] = {
     8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8
 };
 
-static const u8 cyc_ddfd[256] = {
+static const uint8_t cyc_ddfd[256] = {
     4, 4, 4, 4, 4, 4, 4, 4, 4, 15, 4, 4, 4, 4, 4, 4,
     4, 4, 4, 4, 4, 4, 4, 4, 4, 15, 4, 4, 4, 4, 4, 4,
     4, 14, 20, 10, 8, 8, 11, 4, 4, 15, 20, 10, 8, 8, 11, 4,
@@ -64,64 +64,64 @@ static const u8 cyc_ddfd[256] = {
 // get bit "n" of number "val"
 #define GET_BIT(n, val) (((val) >> (n)) & 1)
 
-static inline u8 rb(z80* const z, u16 addr) {
+static inline uint8_t rb(z80* const z, uint16_t addr) {
     return z->read_byte(z->userdata, addr);
 }
 
-static inline void wb(z80* const z, u16 addr, u8 val) {
+static inline void wb(z80* const z, uint16_t addr, uint8_t val) {
     z->write_byte(z->userdata, addr, val);
 }
 
-static inline u16 rw(z80* const z, u16 addr) {
+static inline uint16_t rw(z80* const z, uint16_t addr) {
     return (z->read_byte(z->userdata, addr + 1) << 8) |
             z->read_byte(z->userdata, addr);
 }
 
-static inline void ww(z80* const z, u16 addr, u16 val) {
+static inline void ww(z80* const z, uint16_t addr, uint16_t val) {
     z->write_byte(z->userdata, addr, val & 0xFF);
     z->write_byte(z->userdata, addr + 1, val >> 8);
 }
 
-static inline void pushw(z80* const z, u16 val) {
+static inline void pushw(z80* const z, uint16_t val) {
     z->sp -= 2;
     ww(z, z->sp, val);
 }
 
-static inline u16 popw(z80* const z) {
+static inline uint16_t popw(z80* const z) {
     z->sp += 2;
     return rw(z, z->sp - 2);
 }
 
-static inline u8 nextb(z80* const z) {
+static inline uint8_t nextb(z80* const z) {
     return rb(z, z->pc++);
 }
 
-static inline u16 nextw(z80* const z) {
+static inline uint16_t nextw(z80* const z) {
     z->pc += 2;
     return rw(z, z->pc - 2);
 }
 
-static inline u16 get_bc(z80* const z) { return (z->b << 8) | z->c; }
-static inline u16 get_de(z80* const z) { return (z->d << 8) | z->e; }
-static inline u16 get_hl(z80* const z) { return (z->h << 8) | z->l; }
+static inline uint16_t get_bc(z80* const z) { return (z->b << 8) | z->c; }
+static inline uint16_t get_de(z80* const z) { return (z->d << 8) | z->e; }
+static inline uint16_t get_hl(z80* const z) { return (z->h << 8) | z->l; }
 
-static inline void set_bc(z80* const z, u16 val) {
+static inline void set_bc(z80* const z, uint16_t val) {
     z->b = val >> 8;
     z->c = val & 0xFF;
 }
 
-static inline void set_de(z80* const z, u16 val) {
+static inline void set_de(z80* const z, uint16_t val) {
     z->d = val >> 8;
     z->e = val & 0xFF;
 }
 
-static inline void set_hl(z80* const z, u16 val) {
+static inline void set_hl(z80* const z, uint16_t val) {
     z->h = val >> 8;
     z->l = val & 0xFF;
 }
 
-static inline u8 get_f(z80* const z) {
-    u8 val = 0;
+static inline uint8_t get_f(z80* const z) {
+    uint8_t val = 0;
     val |= z->cf << 0;
     val |= z->nf << 1;
     val |= z->pf << 2;
@@ -133,7 +133,7 @@ static inline u8 get_f(z80* const z) {
     return val;
 }
 
-static inline void set_f(z80* const z, u8 val) {
+static inline void set_f(z80* const z, uint8_t val) {
     z->cf = (val >> 0) & 1;
     z->nf = (val >> 1) & 1;
     z->pf = (val >> 2) & 1;
@@ -151,15 +151,15 @@ static inline void inc_r(z80* const z) {
 
 // returns if there was a carry between bit "bit_no" and "bit_no - 1" when
 // executing "a + b + cy"
-static inline bool carry(int bit_no, u16 a, u16 b, bool cy) {
-    s32 result = a + b + cy;
-    s32 carry = result ^ a ^ b;
+static inline bool carry(int bit_no, uint16_t a, uint16_t b, bool cy) {
+    int32_t result = a + b + cy;
+    int32_t carry = result ^ a ^ b;
     return carry & (1 << bit_no);
 }
 
 // returns the parity of byte: 0 if number of 1 bits in `val` is odd, else 1
-static inline bool parity(u8 val) {
-    u8 nb_one_bits = 0;
+static inline bool parity(uint8_t val) {
+    uint8_t nb_one_bits = 0;
     for (int i = 0; i < 8; i++) {
         nb_one_bits += ((val >> i) & 1);
     }
@@ -167,22 +167,23 @@ static inline bool parity(u8 val) {
     return (nb_one_bits & 1) == 0;
 }
 
-static void exec_opcode(z80* const z, u8 opcode);
-static void exec_opcode_cb(z80* const z, u8 opcode);
-static void exec_opcode_dcb(z80* const z, const u8 opcode, const u16 addr);
-static void exec_opcode_ed(z80* const z, u8 opcode);
-static void exec_opcode_ddfd(z80* const z, u8 opcode, u16* const iz);
+static void exec_opcode(z80* const z, uint8_t opcode);
+static void exec_opcode_cb(z80* const z, uint8_t opcode);
+static void exec_opcode_dcb(z80* const z, const uint8_t opcode,
+    const uint16_t addr);
+static void exec_opcode_ed(z80* const z, uint8_t opcode);
+static void exec_opcode_ddfd(z80* const z, uint8_t opcode, uint16_t* const iz);
 
 // MARK: opcodes
 // jumps to an address
-static inline void jump(z80* const z, u16 addr) {
+static inline void jump(z80* const z, uint16_t addr) {
     z->pc = addr;
     z->mem_ptr = addr;
 }
 
 // jumps to next word in memory if condition is true
 static inline void cond_jump(z80* const z, bool condition) {
-    const u16 addr = nextw(z);
+    const uint16_t addr = nextw(z);
     if (condition) {
         jump(z, addr);
     }
@@ -190,7 +191,7 @@ static inline void cond_jump(z80* const z, bool condition) {
 }
 
 // calls to next word in memory
-static inline void call(z80* const z, u16 addr) {
+static inline void call(z80* const z, uint16_t addr) {
     pushw(z, z->pc);
     z->pc = addr;
     z->mem_ptr = addr;
@@ -198,7 +199,7 @@ static inline void call(z80* const z, u16 addr) {
 
 // calls to next word in memory if condition is true
 static inline void cond_call(z80* const z, bool condition) {
-    const u16 addr = nextw(z);
+    const uint16_t addr = nextw(z);
     if (condition) {
         call(z, addr);
         z->cyc += 7;
@@ -220,13 +221,13 @@ static inline void cond_ret(z80* const z, bool condition) {
     }
 }
 
-static inline void jr(z80* const z, s8 displacement) {
+static inline void jr(z80* const z, int8_t displacement) {
     z->pc += displacement;
     z->mem_ptr = z->pc;
 }
 
 static inline void cond_jr(z80* const z, bool condition) {
-    const s8 b = nextb(z);
+    const int8_t b = nextb(z);
     if (condition) {
         jr(z, b);
         z->cyc += 5;
@@ -234,8 +235,8 @@ static inline void cond_jr(z80* const z, bool condition) {
 }
 
 // ADD Byte: adds two bytes together
-static inline u8 addb(z80* const z, u8 a, u8 b, bool cy) {
-    const u8 result = a + b + cy;
+static inline uint8_t addb(z80* const z, uint8_t a, uint8_t b, bool cy) {
+    const uint8_t result = a + b + cy;
     z->sf = result >> 7;
     z->zf = result == 0;
     z->hf = carry(4, a, b, cy);
@@ -248,8 +249,8 @@ static inline u8 addb(z80* const z, u8 a, u8 b, bool cy) {
 }
 
 // SUBstract Byte: substracts two bytes (with optional carry)
-static inline u8 subb(z80* const z, u8 a, u8 b, bool cy) {
-    u8 val = addb(z, a, ~b, !cy);
+static inline uint8_t subb(z80* const z, uint8_t a, uint8_t b, bool cy) {
+    uint8_t val = addb(z, a, ~b, !cy);
     z->cf = !z->cf;
     z->hf = !z->hf;
     z->nf = 1;
@@ -257,33 +258,33 @@ static inline u8 subb(z80* const z, u8 a, u8 b, bool cy) {
 }
 
 // ADD Word: adds two words together
-static inline u16 addw(z80* const z, u16 a, u16 b, bool cy) {
-    u8 lsb = addb(z, a, b, cy);
-    u8 msb = addb(z, a >> 8, b >> 8, z->cf);
+static inline uint16_t addw(z80* const z, uint16_t a, uint16_t b, bool cy) {
+    uint8_t lsb = addb(z, a, b, cy);
+    uint8_t msb = addb(z, a >> 8, b >> 8, z->cf);
 
-    u16 result = (msb << 8) | lsb;
+    uint16_t result = (msb << 8) | lsb;
     z->zf = result == 0;
     z->mem_ptr = a + 1;
     return result;
 }
 
 // SUBstract Word: substracts two words (with optional carry)
-static inline u16 subw(z80* const z, u16 a, u16 b, bool cy) {
-    u8 lsb = subb(z, a, b, cy);
-    u8 msb = subb(z, a >> 8, b >> 8, z->cf);
+static inline uint16_t subw(z80* const z, uint16_t a, uint16_t b, bool cy) {
+    uint8_t lsb = subb(z, a, b, cy);
+    uint8_t msb = subb(z, a >> 8, b >> 8, z->cf);
 
-    u16 result = (msb << 8) | lsb;
+    uint16_t result = (msb << 8) | lsb;
     z->zf = result == 0;
     z->mem_ptr = a + 1;
     return result;
 }
 
 // adds a word to HL
-static inline void addhl(z80* const z, u16 val) {
+static inline void addhl(z80* const z, uint16_t val) {
     bool sf = z->sf;
     bool zf = z->zf;
     bool pf = z->pf;
-    u16 result = addw(z, get_hl(z), val, 0);
+    uint16_t result = addw(z, get_hl(z), val, 0);
     set_hl(z, result);
     z->sf = sf;
     z->zf = zf;
@@ -291,11 +292,11 @@ static inline void addhl(z80* const z, u16 val) {
 }
 
 // adds a word to IX or IY
-static inline void addiz(z80* const z, u16* reg, u16 val) {
+static inline void addiz(z80* const z, uint16_t* reg, uint16_t val) {
     bool sf = z->sf;
     bool zf = z->zf;
     bool pf = z->pf;
-    u16 result = addw(z, *reg, val, 0);
+    uint16_t result = addw(z, *reg, val, 0);
     *reg = result;
     z->sf = sf;
     z->zf = zf;
@@ -303,33 +304,33 @@ static inline void addiz(z80* const z, u16* reg, u16 val) {
 }
 
 // adds a word (+ carry) to HL
-static inline void adchl(z80* const z, u16 val) {
-    u16 result = addw(z, get_hl(z), val, z->cf);
+static inline void adchl(z80* const z, uint16_t val) {
+    uint16_t result = addw(z, get_hl(z), val, z->cf);
     z->sf = result >> 15;
     z->zf = result == 0;
     set_hl(z, result);
 }
 
 // substracts a word (+ carry) to HL
-static inline void sbchl(z80* const z, u16 val) {
-    const u16 result = subw(z, get_hl(z), val, z->cf);
+static inline void sbchl(z80* const z, uint16_t val) {
+    const uint16_t result = subw(z, get_hl(z), val, z->cf);
     z->sf = result >> 15;
     z->zf = result == 0;
     set_hl(z, result);
 }
 
 // increments a byte value
-static inline u8 inc(z80* const z, u8 a) {
+static inline uint8_t inc(z80* const z, uint8_t a) {
     bool cf = z->cf;
-    u8 result = addb(z, a, 1, 0);
+    uint8_t result = addb(z, a, 1, 0);
     z->cf = cf;
     return result;
 }
 
 // decrements a byte value
-static inline u8 dec(z80* const z, u8 a) {
+static inline uint8_t dec(z80* const z, uint8_t a) {
     bool cf = z->cf;
-    u8 result = subb(z, a, 1, 0);
+    uint8_t result = subb(z, a, 1, 0);
     z->cf = cf;
     return result;
 }
@@ -338,8 +339,8 @@ static inline u8 dec(z80* const z, u8 a) {
 
 // executes a logic "and" between register A and a byte, then stores the
 // result in register A
-static inline void and(z80* const z, u8 val) {
-    const u8 result = z->a & val;
+static inline void and(z80* const z, uint8_t val) {
+    const uint8_t result = z->a & val;
     z->sf = result >> 7;
     z->zf = result == 0;
     z->hf = 1;
@@ -353,8 +354,8 @@ static inline void and(z80* const z, u8 val) {
 
 // executes a logic "xor" between register A and a byte, then stores the
 // result in register A
-static inline void xor(z80* const z, const u8 val) {
-    const u8 result = z->a ^ val;
+static inline void xor(z80* const z, const uint8_t val) {
+    const uint8_t result = z->a ^ val;
     z->sf = result >> 7;
     z->zf = result == 0;
     z->hf = 0;
@@ -368,8 +369,8 @@ static inline void xor(z80* const z, const u8 val) {
 
 // executes a logic "or" between register A and a byte, then stores the result
 // in register A
-static inline void or(z80* const z, const u8 val) {
-    const u8 result = z->a | val;
+static inline void or(z80* const z, const uint8_t val) {
+    const uint8_t result = z->a | val;
     z->sf = result >> 7;
     z->zf = result == 0;
     z->hf = 0;
@@ -382,7 +383,7 @@ static inline void or(z80* const z, const u8 val) {
 }
 
 // compares a value with register A
-static inline void cp(z80* const z, const u8 val) {
+static inline void cp(z80* const z, const uint8_t val) {
     subb(z, z->a, val, 0);
 
     // the only difference between cp and sub is that
@@ -394,7 +395,7 @@ static inline void cp(z80* const z, const u8 val) {
 
 // 0xCB opcodes
 // rotate left with carry
-static inline u8 cb_rlc(z80* const z, u8 val) {
+static inline uint8_t cb_rlc(z80* const z, uint8_t val) {
     const bool old = val >> 7;
     val = (val << 1) | old;
     z->sf = val >> 7;
@@ -409,7 +410,7 @@ static inline u8 cb_rlc(z80* const z, u8 val) {
 }
 
 // rotate right with carry
-static inline u8 cb_rrc(z80* const z, u8 val) {
+static inline uint8_t cb_rrc(z80* const z, uint8_t val) {
     const bool old = val & 1;
     val = (val >> 1) | (old << 7);
     z->sf = val >> 7;
@@ -424,7 +425,7 @@ static inline u8 cb_rrc(z80* const z, u8 val) {
 }
 
 // rotate left (simple)
-static inline u8 cb_rl(z80* const z, u8 val) {
+static inline uint8_t cb_rl(z80* const z, uint8_t val) {
     const bool cf = z->cf;
     z->cf = val >> 7;
     val = (val << 1) | cf;
@@ -439,7 +440,7 @@ static inline u8 cb_rl(z80* const z, u8 val) {
 }
 
 // rotate right (simple)
-static inline u8 cb_rr(z80* const z, u8 val) {
+static inline uint8_t cb_rr(z80* const z, uint8_t val) {
     const bool c = z->cf;
     z->cf = val & 1;
     val = (val >> 1) | (c << 7);
@@ -454,7 +455,7 @@ static inline u8 cb_rr(z80* const z, u8 val) {
 }
 
 // shift left preserving sign
-static inline u8 cb_sla(z80* const z, u8 val) {
+static inline uint8_t cb_sla(z80* const z, uint8_t val) {
     z->cf = val >> 7;
     val <<= 1;
     z->sf = val >> 7;
@@ -468,7 +469,7 @@ static inline u8 cb_sla(z80* const z, u8 val) {
 }
 
 // SLL (exactly like SLA, but sets the first bit to 1)
-static inline u8 cb_sll(z80* const z, u8 val) {
+static inline uint8_t cb_sll(z80* const z, uint8_t val) {
     z->cf = val >> 7;
     val <<= 1;
     val |= 1;
@@ -483,7 +484,7 @@ static inline u8 cb_sll(z80* const z, u8 val) {
 }
 
 // shift right preserving sign
-static inline u8 cb_sra(z80* const z, u8 val) {
+static inline uint8_t cb_sra(z80* const z, uint8_t val) {
     z->cf = val & 1;
     val = (val >> 1) | (val & 0x80); // 0b10000000
     z->sf = val >> 7;
@@ -497,7 +498,7 @@ static inline u8 cb_sra(z80* const z, u8 val) {
 }
 
 // shift register right
-static inline u8 cb_srl(z80* const z, u8 val) {
+static inline uint8_t cb_srl(z80* const z, uint8_t val) {
     z->cf = val & 1;
     val >>= 1;
     z->sf = val >> 7;
@@ -511,8 +512,8 @@ static inline u8 cb_srl(z80* const z, u8 val) {
 }
 
 // tests bit "n" from a byte
-static inline u8 cb_bit(z80* const z, u8 val, u8 n) {
-    const u8 result = val & (1 << n);
+static inline uint8_t cb_bit(z80* const z, uint8_t val, uint8_t n) {
+    const uint8_t result = val & (1 << n);
     z->sf = result >> 7;
     z->zf = result == 0;
     z->yf = GET_BIT(5, val);
@@ -524,9 +525,9 @@ static inline u8 cb_bit(z80* const z, u8 val, u8 n) {
 }
 
 static inline void ldi(z80* const z) {
-    const u16 de = get_de(z);
-    const u16 hl = get_hl(z);
-    const u8 val = rb(z, hl);
+    const uint16_t de = get_de(z);
+    const uint16_t hl = get_hl(z);
+    const uint8_t val = rb(z, hl);
 
     wb(z, de, val);
 
@@ -536,7 +537,7 @@ static inline void ldi(z80* const z) {
 
     // see https://wikiti.brandonw.net/index.php?title=Z80_Instruction_Set
     // for the calculation of xf/yf on LDI
-    const u8 result = val + z->a;
+    const uint8_t result = val + z->a;
     z->xf = GET_BIT(3, result);
     z->yf = GET_BIT(1, result);
 
@@ -554,7 +555,7 @@ static inline void ldd(z80* const z) {
 
 static inline void cpi(z80* const z) {
     bool cf = z->cf;
-    const u8 result = subb(z, z->a, rb(z, get_hl(z)), 0);
+    const uint8_t result = subb(z, z->a, rb(z, get_hl(z)), 0);
     set_hl(z, get_hl(z) + 1);
     set_bc(z, get_bc(z) - 1);
     z->xf = GET_BIT(3, result - z->hf);
@@ -571,7 +572,7 @@ static inline void cpd(z80* const z) {
     z->mem_ptr -= 2;
 }
 
-static void in_r_c(z80* const z, u8* r) {
+static void in_r_c(z80* const z, uint8_t* r) {
     *r = z->port_in(z, z->c);
     z->zf = *r == 0;
     z->sf = *r >> 7;
@@ -581,7 +582,7 @@ static void in_r_c(z80* const z, u8* r) {
 }
 
 static void ini(z80* const z) {
-    u8 val = z->port_in(z, z->c);
+    uint8_t val = z->port_in(z, z->c);
     wb(z, get_hl(z), val);
     set_hl(z, get_hl(z) + 1);
     z->b -= 1;
@@ -620,7 +621,7 @@ static void daa(z80* const z) {
     // checked. If this more significant digit also happens to be greater
     // than 9 or the C flag is set, then $60 is added."
     // > http://z80-heaven.wikidot.com/instructions-set:daa
-    u8 correction = 0;
+    uint8_t correction = 0;
 
     if ((z->a & 0x0F) > 0x09 || z->hf) {
         correction += 0x06;
@@ -648,8 +649,9 @@ static void daa(z80* const z) {
     z->yf = GET_BIT(5, z->a);
 }
 
-static inline u16 displace(z80* const z, u16 base_addr, s8 displacement) {
-    const u16 addr = base_addr + displacement;
+static inline uint16_t displace(z80* const z, uint16_t base_addr,
+                                int8_t displacement) {
+    const uint16_t addr = base_addr + displacement;
     z->mem_ptr = addr;
     return addr;
 }
@@ -776,7 +778,7 @@ void z80_step(z80* const z) {
         exec_opcode(z, 0x00);
     }
     else {
-        const u8 opcode = nextb(z);
+        const uint8_t opcode = nextb(z);
         exec_opcode(z, opcode);
     }
 
@@ -814,13 +816,13 @@ void z80_gen_nmi(z80* const z) {
 }
 
 // function to call when an INT is to be serviced
-void z80_gen_int(z80* const z, u8 data) {
+void z80_gen_int(z80* const z, uint8_t data) {
     z->int_pending = 1;
     z->int_data = data;
 }
 
 // executes a non-prefixed opcode
-void exec_opcode(z80* const z, u8 opcode) {
+void exec_opcode(z80* const z, uint8_t opcode) {
     z->cyc += cyc_00[opcode];
     inc_r(z);
 
@@ -916,7 +918,7 @@ void exec_opcode(z80* const z, u8 opcode) {
         z->mem_ptr = get_de(z) + 1;
     break; // ld a,(de)
     case 0x3A: {
-        const u16 addr = nextw(z);
+        const uint16_t addr = nextw(z);
         z->a = rb(z, addr);
         z->mem_ptr = addr + 1;
     } break; // ld a,(**)
@@ -932,7 +934,7 @@ void exec_opcode(z80* const z, u8 opcode) {
     break; // ld (de),a
 
     case 0x32: {
-        const u16 addr = nextw(z);
+        const uint16_t addr = nextw(z);
         wb(z, addr, z->a);
         z->mem_ptr = (z->a << 8) | ((addr + 1) & 0xFF);
     } break; // ld (**),a
@@ -944,13 +946,13 @@ void exec_opcode(z80* const z, u8 opcode) {
     case 0x31: z->sp = nextw(z); break; // ld sp,**
 
     case 0x2A: {
-        const u16 addr = nextw(z);
+        const uint16_t addr = nextw(z);
         set_hl(z, rw(z, addr));
         z->mem_ptr = addr + 1;
     } break; // ld hl,(**)
 
     case 0x22: {
-        const u16 addr = nextw(z);
+        const uint16_t addr = nextw(z);
         ww(z, addr, get_hl(z));
         z->mem_ptr = addr + 1;
     } break; // ld (**),hl
@@ -959,13 +961,13 @@ void exec_opcode(z80* const z, u8 opcode) {
 
     // register exchange instructions
     case 0xEB: { // ex de,hl
-        const u16 de = get_de(z);
+        const uint16_t de = get_de(z);
         set_de(z, get_hl(z));
         set_hl(z, de);
     } break;
 
     case 0xE3: { // ex (sp),hl
-        const u16 val = rw(z, z->sp);
+        const uint16_t val = rw(z, z->sp);
         ww(z, z->sp, get_hl(z));
         set_hl(z, val);
         z->mem_ptr = val;
@@ -1038,7 +1040,7 @@ void exec_opcode(z80* const z, u8 opcode) {
     case 0x24: z->h = inc(z, z->h); break; // inc h
     case 0x2C: z->l = inc(z, z->l); break; // inc l
     case 0x34: { // inc (hl)
-        u8 result = inc(z, rb(z, get_hl(z)));
+        uint8_t result = inc(z, rb(z, get_hl(z)));
         wb(z, get_hl(z), result);
     } break;
 
@@ -1051,7 +1053,7 @@ void exec_opcode(z80* const z, u8 opcode) {
     case 0x25: z->h = dec(z, z->h); break; // dec h
     case 0x2D: z->l = dec(z, z->l); break; // dec l
     case 0x35: { // dec (hl)
-        u8 result = dec(z, rb(z, get_hl(z)));
+        uint8_t result = dec(z, rb(z, get_hl(z)));
         wb(z, get_hl(z), result);
     } break;
 
@@ -1186,7 +1188,7 @@ void exec_opcode(z80* const z, u8 opcode) {
     case 0xFA: cond_jump(z, z->sf == 1); break; // jp m, **
 
     case 0x10: cond_jr(z, --z->b != 0); break; // djnz *
-    case 0x18: z->pc += (s8) nextb(z); break; // jr *
+    case 0x18: z->pc += (int8_t) nextb(z); break; // jr *
     case 0x20: cond_jr(z, z->zf == 0); break; // jr nz, *
     case 0x28: cond_jr(z, z->zf == 1); break; // jr z, *
     case 0x30: cond_jr(z, z->cf == 0); break; // jr nc, *
@@ -1233,27 +1235,27 @@ void exec_opcode(z80* const z, u8 opcode) {
     case 0xD1: set_de(z, popw(z)); break; // pop de
     case 0xE1: set_hl(z, popw(z)); break; // pop hl
     case 0xF1: { // pop af
-        u16 val = popw(z);
+        uint16_t val = popw(z);
         z->a = val >> 8;
         set_f(z, val & 0xFF);
     } break;
 
     case 0xDB: { // in a,(n)
-        const u8 port = nextb(z);
-        const u8 a = z->a;
+        const uint8_t port = nextb(z);
+        const uint8_t a = z->a;
         z->a = z->port_in(z, port);
         z->mem_ptr = (a << 8) | (z->a + 1);
     } break;
 
     case 0xD3: { // out (n), a
-        const u8 port = nextb(z);
+        const uint8_t port = nextb(z);
         z->port_out(z, port, z->a);
         z->mem_ptr = (port + 1) | (z->a << 8);
     } break;
 
     case 0x08: { // ex af,af'
-        u8 a = z->a;
-        u8 f = get_f(z);
+        uint8_t a = z->a;
+        uint8_t f = get_f(z);
 
         z->a = z->a_;
         set_f(z, z->f_);
@@ -1262,7 +1264,7 @@ void exec_opcode(z80* const z, u8 opcode) {
         z->f_ = f;
     } break;
     case 0xD9: { // exx
-        u8 b = z->b, c = z->c, d = z->d, e = z->e, h = z->h, l = z->l;
+        uint8_t b = z->b, c = z->c, d = z->d, e = z->e, h = z->h, l = z->l;
 
         z->b = z->b_;
         z->c = z->c_;
@@ -1289,7 +1291,7 @@ void exec_opcode(z80* const z, u8 opcode) {
 }
 
 // executes a DD/FD opcode (IZ = IX or IY)
-void exec_opcode_ddfd(z80* const z, u8 opcode, u16* const iz) {
+void exec_opcode_ddfd(z80* const z, uint8_t opcode, uint16_t* const iz) {
     z->cyc += cyc_ddfd[opcode];
     inc_r(z);
 
@@ -1343,12 +1345,12 @@ void exec_opcode_ddfd(z80* const z, u8 opcode, u16* const iz) {
     case 0x2B: *iz -= 1; break; // dec iz
 
     case 0x34: {
-        u16 addr = IZD;
+        uint16_t addr = IZD;
         wb(z, addr, inc(z, rb(z, addr)));
     } break; // inc (iz+*)
 
     case 0x35: {
-        u16 addr = IZD;
+        uint16_t addr = IZD;
         wb(z, addr, dec(z, rb(z, addr)));
     } break; // dec (iz+*)
 
@@ -1361,7 +1363,10 @@ void exec_opcode_ddfd(z80* const z, u8 opcode, u16* const iz) {
     case 0x22: ww(z, nextw(z), *iz); break; // ld (**),iz
     case 0x21: *iz = nextw(z); break; // ld iz,**
 
-    case 0x36: { u16 addr = IZD; wb(z, addr, nextb(z)); } break; // ld (iz+*),*
+    case 0x36: {
+        uint16_t addr = IZD;
+        wb(z, addr, nextb(z));
+    } break; // ld (iz+*),*
 
     case 0x70: wb(z, IZD, z->b); break; // ld (iz+*),b
     case 0x71: wb(z, IZD, z->c); break; // ld (iz+*),c
@@ -1412,15 +1417,15 @@ void exec_opcode_ddfd(z80* const z, u8 opcode, u16* const iz) {
     case 0xF9: z->sp = *iz; break; // ld sp,iz
 
     case 0xE3: {
-        const u16 val = rw(z, z->sp);
+        const uint16_t val = rw(z, z->sp);
         ww(z, z->sp, *iz);
         *iz = val;
         z->mem_ptr = val;
     } break; // ex (sp),iz
 
     case 0xCB: {
-        u16 addr = IZD;
-        u8 opcode = nextb(z);
+        uint16_t addr = IZD;
+        uint8_t opcode = nextb(z);
         exec_opcode_dcb(z, opcode, addr);
     } break;
 
@@ -1438,17 +1443,17 @@ void exec_opcode_ddfd(z80* const z, u8 opcode, u16* const iz) {
 }
 
 // executes a CB opcode
-void exec_opcode_cb(z80* const z, u8 opcode) {
+void exec_opcode_cb(z80* const z, uint8_t opcode) {
     z->cyc += 8;
     inc_r(z);
 
     // decoding instructions from http://z80.info/decoding.htm#cb
-    u8 x_ = (opcode >> 6) & 3; // 0b11
-    u8 y_ = (opcode >> 3) & 7; // 0b111
-    u8 z_ = opcode & 7; // 0b111
+    uint8_t x_ = (opcode >> 6) & 3; // 0b11
+    uint8_t y_ = (opcode >> 3) & 7; // 0b111
+    uint8_t z_ = opcode & 7; // 0b111
 
-    u8 hl = 0;
-    u8* reg = 0;
+    uint8_t hl = 0;
+    uint8_t* reg = 0;
     switch (z_) {
         case 0: reg = &z->b; break;
         case 1: reg = &z->c; break;
@@ -1497,14 +1502,14 @@ void exec_opcode_cb(z80* const z, u8 opcode) {
 }
 
 // executes a displaced CB opcode (DDCB or FDCB)
-void exec_opcode_dcb(z80* const z, u8 opcode, u16 addr) {
-    u8 val = rb(z, addr);
-    u8 result = 0;
+void exec_opcode_dcb(z80* const z, uint8_t opcode, uint16_t addr) {
+    uint8_t val = rb(z, addr);
+    uint8_t result = 0;
 
     // decoding instructions from http://z80.info/decoding.htm#ddcb
-    u8 x_ = (opcode >> 6) & 3; // 0b11
-    u8 y_ = (opcode >> 3) & 7; // 0b111
-    u8 z_ = opcode & 7; // 0b111
+    uint8_t x_ = (opcode >> 6) & 3; // 0b11
+    uint8_t y_ = (opcode >> 3) & 7; // 0b111
+    uint8_t z_ = opcode & 7; // 0b111
 
     switch(x_) {
     case 0: {
@@ -1558,7 +1563,7 @@ void exec_opcode_dcb(z80* const z, u8 opcode, u16 addr) {
 }
 
 // executes a ED opcode
-void exec_opcode_ed(z80* const z, u8 opcode) {
+void exec_opcode_ed(z80* const z, uint8_t opcode) {
     z->cyc += cyc_ed[opcode];
     inc_r(z);
     switch(opcode) {
@@ -1640,7 +1645,7 @@ void exec_opcode_ed(z80* const z, u8 opcode) {
     case 0x58: in_r_c(z, &z->e); break; // in e, (c)
     case 0x60: in_r_c(z, &z->h); break; // in h, (c)
     case 0x68: in_r_c(z, &z->l); break; // in l, (c)
-    case 0x70: { u8 val; in_r_c(z, &val); } break; // in (c)
+    case 0x70: { uint8_t val; in_r_c(z, &val); } break; // in (c)
     case 0x78:
         in_r_c(z, &z->a);
         z->mem_ptr = get_bc(z) + 1;
@@ -1702,49 +1707,49 @@ void exec_opcode_ed(z80* const z, u8 opcode) {
     case 0x7A: adchl(z, z->sp); break; // adc hl,sp
 
     case 0x43: { // ld (**), bc
-        const u16 addr = nextw(z);
+        const uint16_t addr = nextw(z);
         ww(z, addr, get_bc(z));
         z->mem_ptr = addr + 1;
     } break;
 
     case 0x53: { // ld (**), de
-        const u16 addr = nextw(z);
+        const uint16_t addr = nextw(z);
         ww(z, addr, get_de(z));
         z->mem_ptr = addr + 1;
     } break;
 
     case 0x63: { // ld (**), hl
-        const u16 addr = nextw(z);
+        const uint16_t addr = nextw(z);
         ww(z, addr, get_hl(z));
         z->mem_ptr = addr + 1;
     } break;
 
     case 0x73: { // ld (**),sp
-        const u16 addr = nextw(z);
+        const uint16_t addr = nextw(z);
         ww(z, addr, z->sp);
         z->mem_ptr = addr + 1;
     } break;
 
     case 0x4B: { // ld bc, (**)
-        const u16 addr = nextw(z);
+        const uint16_t addr = nextw(z);
         set_bc(z, rw(z, addr));
         z->mem_ptr = addr + 1;
     } break;
 
     case 0x5B: { // ld de, (**)
-        const u16 addr = nextw(z);
+        const uint16_t addr = nextw(z);
         set_de(z, rw(z, addr));
         z->mem_ptr = addr + 1;
     } break;
 
     case 0x6B: { // ld hl, (**)
-        const u16 addr = nextw(z);
+        const uint16_t addr = nextw(z);
         set_hl(z, rw(z, addr));
         z->mem_ptr = addr + 1;
     } break;
 
     case 0x7B: { // ld sp,(**)
-        const u16 addr = nextw(z);
+        const uint16_t addr = nextw(z);
         z->sp = rw(z, addr);
         z->mem_ptr = addr + 1;
     } break;
@@ -1759,8 +1764,8 @@ void exec_opcode_ed(z80* const z, u8 opcode) {
     case 0x5E: case 0x7E: z->interrupt_mode = 2; break; // im 2
 
     case 0x67: { // rrd
-        u8 a = z->a;
-        u8 val = rb(z, get_hl(z));
+        uint8_t a = z->a;
+        uint8_t val = rb(z, get_hl(z));
         z->a = (a & 0xF0) | (val & 0xF);
         wb(z, get_hl(z), (val >> 4) | (a << 4));
 
@@ -1775,8 +1780,8 @@ void exec_opcode_ed(z80* const z, u8 opcode) {
     } break;
 
     case 0x6F: { // rld
-        u8 a = z->a;
-        u8 val = rb(z, get_hl(z));
+        uint8_t a = z->a;
+        uint8_t val = rb(z, get_hl(z));
         z->a = (a & 0xF0) | (val >> 4);
         wb(z, get_hl(z), (val << 4) | (a & 0xF));
 

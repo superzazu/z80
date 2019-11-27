@@ -5,18 +5,18 @@
 
 // MARK: simple memory interface
 #define MEMORY_SIZE 0x10000
-static u8* memory;
+static uint8_t* memory;
 static bool test_finished = 0;
 
-static u8 rb(void* userdata, u16 addr) {
+static uint8_t rb(void* userdata, uint16_t addr) {
     return memory[addr];
 }
 
-static void wb(void* userdata, u16 addr, u8 val) {
+static void wb(void* userdata, uint16_t addr, uint8_t val) {
     memory[addr] = val;
 }
 
-static int load_file(const char* filename, u16 addr) {
+static int load_file(const char* filename, uint16_t addr) {
     FILE* f = fopen(filename, "rb");
     if (f == NULL) {
         fprintf(stderr, "error: can't open file '%s'.\n", filename);
@@ -34,7 +34,7 @@ static int load_file(const char* filename, u16 addr) {
     }
 
     // copying the bytes in memory:
-    size_t result = fread(&memory[addr], sizeof(u8), file_size, f);
+    size_t result = fread(&memory[addr], sizeof(uint8_t), file_size, f);
     if (result != file_size) {
         fprintf(stderr, "error: while reading file '%s'\n", filename);
         return 1;
@@ -44,8 +44,8 @@ static int load_file(const char* filename, u16 addr) {
     return 0;
 }
 
-static u8 in(z80* const z, u8 port) {
-    u8 operation = z->c;
+static uint8_t in(z80* const z, uint8_t port) {
+    uint8_t operation = z->c;
 
     // print a character stored in E
     if (operation == 2) {
@@ -53,7 +53,7 @@ static u8 in(z80* const z, u8 port) {
     }
     // print from memory at (DE) until '$' char
     else if (operation == 9) {
-        u16 addr = (z->d << 8) | z->e;
+        uint16_t addr = (z->d << 8) | z->e;
         do {
             printf("%c", rb(z, addr++));
         } while(rb(z, addr) != '$');
@@ -62,7 +62,7 @@ static u8 in(z80* const z, u8 port) {
     return 0xFF;
 }
 
-static void out(z80* const z, u8 port, u8 val) {
+static void out(z80* const z, uint8_t port, uint8_t val) {
     test_finished = 1;
 }
 
@@ -74,7 +74,7 @@ static int run_test(z80* const z, const char* filename,
     z->write_byte = wb;
     z->port_in = in;
     z->port_out = out;
-    memset(memory, 0, 0x10000);
+    memset(memory, 0, MEMORY_SIZE);
 
     if (load_file(filename, 0x100) != 0) {
         return 1;
@@ -113,7 +113,7 @@ static int run_test(z80* const z, const char* filename,
 }
 
 int main(void) {
-    memory = malloc(0x10000 * sizeof(u8));
+    memory = malloc(MEMORY_SIZE);
     if (memory == NULL) {
         return 1;
     }
