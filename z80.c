@@ -734,6 +734,7 @@ void z80_init(z80* const z) {
   z->e_ = 0;
   z->h_ = 0;
   z->l_ = 0;
+  z->f_ = 0;
 
   z->i = 0;
   z->r = 0;
