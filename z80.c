@@ -1618,7 +1618,7 @@ void exec_opcode_ed(z80* const z, uint8_t opcode) {
   case 0xA2: ini(z); break; // ini
   case 0xB2:
     ini(z);
-    if (get_bc(z) > 0) {
+    if (z->b > 0) {
       z->pc -= 2;
       z->cyc += 5;
     }
@@ -1626,7 +1626,7 @@ void exec_opcode_ed(z80* const z, uint8_t opcode) {
   case 0xAA: ind(z); break; // ind
   case 0xBA:
     ind(z);
-    if (get_bc(z) > 0) {
+    if (z->b > 0) {
       z->pc -= 2;
       z->cyc += 5;
     }
@@ -1647,7 +1647,7 @@ void exec_opcode_ed(z80* const z, uint8_t opcode) {
   case 0xA3: outi(z); break; // outi
   case 0xB3: {
     outi(z);
-    if (get_bc(z) > 0) {
+    if (z->b > 0) {
       z->pc -= 2;
       z->cyc += 5;
     }
@@ -1655,7 +1655,7 @@ void exec_opcode_ed(z80* const z, uint8_t opcode) {
   case 0xAB: outd(z); break; // outd
   case 0xBB: {
     outd(z);
-    if (get_bc(z) > 0) {
+    if (z->b > 0) {
       z->pc -= 2;
     }
   } break; // otdr
