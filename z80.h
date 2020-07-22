@@ -13,7 +13,7 @@ struct z80 {
   void (*port_out)(z80*, uint8_t, uint8_t);
   void* userdata;
 
-  unsigned long cyc; // cycle count (t-states)
+  uint64_t cyc; // cycle count (t-states)
 
   uint16_t pc, sp, ix, iy; // special purpose registers
   uint16_t mem_ptr; // "wz" register
