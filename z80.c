@@ -1379,8 +1379,8 @@ void exec_opcode_ddfd(z80* const z, uint8_t opcode, uint16_t* const iz) {
 
   case 0xCB: {
     uint16_t addr = IZD;
-    uint8_t opcode = nextb(z);
-    exec_opcode_dcb(z, opcode, addr);
+    uint8_t op = nextb(z);
+    exec_opcode_dcb(z, op, addr);
   } break;
 
   default: {
