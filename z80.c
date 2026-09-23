@@ -1143,7 +1143,7 @@ void exec_opcode(z80* const z, uint8_t opcode) {
   case 0xFA: cond_jump(z, z->sf == 1); break; // jp m, **
 
   case 0x10: cond_jr(z, --z->b != 0); break; // djnz *
-  case 0x18: z->pc += (int8_t) nextb(z); break; // jr *
+  case 0x18: jr(z, (int8_t)nextb(z)); break; // jr *
   case 0x20: cond_jr(z, z->zf == 0); break; // jr nz, *
   case 0x28: cond_jr(z, z->zf == 1); break; // jr z, *
   case 0x30: cond_jr(z, z->cf == 0); break; // jr nc, *
@@ -1453,7 +1453,8 @@ void exec_opcode_cb(z80* const z, uint8_t opcode) {
     z->cyc += 7;
   }
 
-  if (reg == &hl) {
+  // BIT only observes memory. Rotates, RES and SET write their result back.
+  if (reg == &hl && x_ != 1) {
     wb(z, get_hl(z), hl);
   }
 }
