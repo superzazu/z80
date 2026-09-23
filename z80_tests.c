@@ -7,13 +7,57 @@
 #define MEMORY_SIZE 0x10000
 static uint8_t* memory = NULL;
 static bool test_finished = 0;
+static unsigned memory_writes = 0;
+static uint8_t in(z80* const z, uint8_t port);
+static void out(z80* const z, uint8_t port, uint8_t val);
 
 static uint8_t rb(void* userdata, uint16_t addr) {
   return memory[addr];
 }
 
 static void wb(void* userdata, uint16_t addr, uint8_t val) {
+  memory_writes += 1;
   memory[addr] = val;
+}
+
+static int run_regression_tests(z80* const z) {
+  int failed = 0;
+  z80_init(z);
+  z->read_byte = rb;
+  z->write_byte = wb;
+  z->port_in = in;
+  z->port_out = out;
+  memset(memory, 0, MEMORY_SIZE);
+
+  // LD HL,$4000; BIT 0,(HL). BIT must not invoke the write callback.
+  memory[0] = 0x21;
+  memory[1] = 0x00;
+  memory[2] = 0x40;
+  memory[3] = 0xcb;
+  memory[4] = 0x46;
+  memory[0x4000] = 1;
+  memory_writes = 0;
+  z80_step(z);
+  z80_step(z);
+  if (memory_writes != 0 || memory[0x4000] != 1) {
+    fprintf(stderr, "BIT n,(HL) unexpectedly wrote to memory\n");
+    failed = 1;
+  }
+
+  // JR -2 must branch relative to the PC after reading its displacement.
+  z80_init(z);
+  z->read_byte = rb;
+  z->write_byte = wb;
+  z->port_in = in;
+  z->port_out = out;
+  memory[0] = 0x18;
+  memory[1] = 0xfe;
+  z80_step(z);
+  if (z->pc != 0) {
+    fprintf(stderr, "JR used the wrong PC base (got %04x)\n", z->pc);
+    failed = 1;
+  }
+  return failed;
 }
 
 static int load_file(const char* filename, uint16_t addr) {
@@ -112,7 +156,7 @@ static int run_test(
   return cyc_expected != z->cyc;
 }
 
-int main(void) {
+int main(int argc, char** argv) {
   memory = malloc(MEMORY_SIZE);
   if (memory == NULL) {
     return 1;
@@ -123,6 +167,11 @@ int main(void) {
   // the following cycle counts have been retrieved from z80emu
   // (https://github.com/anotherlin/z80emu) for those exact roms
   int r = 0;
+  r += run_regression_tests(&cpu);
+  if (argc == 2 && strcmp(argv[1], "--regression-only") == 0) {
+    free(memory);
+    return r != 0;
+  }
   r += run_test(&cpu, "roms/prelim.com", 8721LU);
   r += run_test(&cpu, "roms/zexdoc.cim", 46734978649LU);
   r += run_test(&cpu, "roms/zexall.cim", 46734978649LU);
