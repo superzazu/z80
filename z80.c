@@ -1453,7 +1453,7 @@ void exec_opcode_cb(z80* const z, uint8_t opcode) {
     z->cyc += 7;
   }
 
-  if (reg == &hl) {
+  if (reg == &hl && x_ != 1) { // BIT only reads (HL)
     wb(z, get_hl(z), hl);
   }
 }
